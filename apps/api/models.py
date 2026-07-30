@@ -30,7 +30,7 @@ class Analysis(Base):
     __tablename__ = "analyses"
 
     id = Column(String, primary_key=True, default=generate_uuid)
-    media_asset_id = Column(String, ForeignKey("media_assets.id"), nullable=False)
+    media_asset_id = Column(String, ForeignKey("media_assets.id"), nullable=False, index=True)
     platform = Column(String, nullable=False)  # instagram, tiktok, youtube, etc.
     objective = Column(String, nullable=False)  # views, follows, saves, shares, comments, leads, sales
     niche = Column(String, nullable=True)
@@ -54,7 +54,7 @@ class AnalysisStage(Base):
     __tablename__ = "analysis_stages"
 
     id = Column(String, primary_key=True, default=generate_uuid)
-    analysis_id = Column(String, ForeignKey("analyses.id"), nullable=False)
+    analysis_id = Column(String, ForeignKey("analyses.id"), nullable=False, index=True)
     stage = Column(String, nullable=False)  # media_probe, transcription, scene_detection, ocr, creative_analysis, completed
     status = Column(String, default="pending")  # pending, processing, completed, failed
     started_at = Column(DateTime, nullable=True)
@@ -67,7 +67,7 @@ class TranscriptSegment(Base):
     __tablename__ = "transcript_segments"
 
     id = Column(String, primary_key=True, default=generate_uuid)
-    analysis_id = Column(String, ForeignKey("analyses.id"), nullable=False)
+    analysis_id = Column(String, ForeignKey("analyses.id"), nullable=False, index=True)
     start_ms = Column(Integer, nullable=False)
     end_ms = Column(Integer, nullable=False)
     text = Column(Text, nullable=False)
@@ -80,7 +80,7 @@ class Scene(Base):
     __tablename__ = "scenes"
 
     id = Column(String, primary_key=True, default=generate_uuid)
-    analysis_id = Column(String, ForeignKey("analyses.id"), nullable=False)
+    analysis_id = Column(String, ForeignKey("analyses.id"), nullable=False, index=True)
     start_ms = Column(Integer, nullable=False)
     end_ms = Column(Integer, nullable=False)
     representative_frame_key = Column(String, nullable=True)
@@ -93,7 +93,7 @@ class OCRSpan(Base):
     __tablename__ = "ocr_spans"
 
     id = Column(String, primary_key=True, default=generate_uuid)
-    scene_id = Column(String, ForeignKey("scenes.id"), nullable=False)
+    scene_id = Column(String, ForeignKey("scenes.id"), nullable=False, index=True)
     start_ms = Column(Integer, nullable=False)
     end_ms = Column(Integer, nullable=False)
     text = Column(Text, nullable=False)
@@ -104,7 +104,7 @@ class Finding(Base):
     __tablename__ = "findings"
 
     id = Column(String, primary_key=True, default=generate_uuid)
-    analysis_id = Column(String, ForeignKey("analyses.id"), nullable=False)
+    analysis_id = Column(String, ForeignKey("analyses.id"), nullable=False, index=True)
     category = Column(String, nullable=False)  # hook, clarity, pacing, visual, audio, accessibility, searchability, engagement
     severity = Column(String, nullable=False)  # high, medium, low
     start_ms = Column(Integer, nullable=True)
@@ -121,7 +121,7 @@ class GeneratedAsset(Base):
     __tablename__ = "generated_assets"
 
     id = Column(String, primary_key=True, default=generate_uuid)
-    analysis_id = Column(String, ForeignKey("analyses.id"), nullable=False)
+    analysis_id = Column(String, ForeignKey("analyses.id"), nullable=False, index=True)
     type = Column(String, nullable=False)  # caption, hashtag_set, cover, cta, keyword, idea
     variant = Column(String, nullable=True)  # Option A, Option B, etc.
     content_json = Column(JSON, nullable=False)

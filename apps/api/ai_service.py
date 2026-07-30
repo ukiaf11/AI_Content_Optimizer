@@ -367,19 +367,19 @@ def run_analysis_pipeline(db_session_factory, analysis_id: str, file_path: str):
         if not report_data:
             # Fallback to Mock Data Generator
             logger.info("Executing pipeline with high-fidelity Mock fallback...")
-            time.sleep(2)  # Simulate transcribing delay
+            time.sleep(0.2)  # Simulate transcribing delay
             update_stage("transcription", "completed")
             
             update_stage("scene_detection", "processing")
-            time.sleep(1.5)  # Simulate scene detection delay
+            time.sleep(0.15)  # Simulate scene detection delay
             update_stage("scene_detection", "completed")
             
             update_stage("ocr", "processing")
-            time.sleep(1)
+            time.sleep(0.1)
             update_stage("ocr", "completed")
             
             update_stage("creative_analysis", "processing")
-            time.sleep(2)
+            time.sleep(0.2)
             update_stage("creative_analysis", "completed")
             
             report_data = generate_mock_analysis(analysis, duration_ms)
@@ -413,8 +413,12 @@ def run_analysis_pipeline(db_session_factory, analysis_id: str, file_path: str):
             db.add(db_seg)
 
         # 3. Save Scenes and OCR
+        from concurrent.futures import ThreadPoolExecutor
         UPLOAD_DIR = os.environ.get("UPLOAD_DIR", "./uploads")
-        for s_idx, scene in enumerate(report_data.get("scenes", [])):
+        scenes_list = report_data.get("scenes", [])
+
+        def process_scene_frame(args):
+            s_idx, scene = args
             frame_key = None
             if media_asset.type == "video":
                 frame_filename = f"{analysis_id}_scene_{s_idx}.jpg"
@@ -424,7 +428,13 @@ def run_analysis_pipeline(db_session_factory, analysis_id: str, file_path: str):
                     frame_key = frame_filename
             else:
                 frame_key = media_asset.object_key
+            return scene, frame_key
 
+        # Concurrently extract frames for all scenes in parallel
+        with ThreadPoolExecutor(max_workers=4) as executor:
+            extracted_results = list(executor.map(process_scene_frame, enumerate(scenes_list)))
+
+        for scene, frame_key in extracted_results:
             db_scene = Scene(
                 analysis_id=analysis_id,
                 start_ms=scene["start_ms"],
