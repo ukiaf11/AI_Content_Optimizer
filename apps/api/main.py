@@ -157,7 +157,7 @@ def create_analysis(
     # Start background processing pipeline
     file_path = os.path.join(UPLOAD_DIR, media_asset.object_key)
     # We pass the db sessionmaker factory to run inside the background worker safely
-    from .database import SessionLocal
+    from database import SessionLocal
     background_tasks.add_task(run_analysis_pipeline, SessionLocal, analysis.id, file_path)
     
     return {

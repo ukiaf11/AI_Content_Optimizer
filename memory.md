@@ -6,9 +6,9 @@ Build the **AI Content Optimizer**, a creative intelligence workspace where crea
 ## 2. Tech Stack & Environment
 - **OS**: Linux
 - **Tools Available**: Node.js (v24.16.0), Python (v3.14.4), `uv` (v0.11.18), FFmpeg (v8.0.1), ffprobe (v8.0.1).
-- **Backend Architecture**: Python (FastAPI) + SQLite (for zero-setup dev deployment) + FFmpeg/ffprobe for media probes. Background tasks managed asynchronously within FastAPI or simple thread/process pools.
-- **Frontend Architecture**: React (Vite) + TypeScript + Vanilla CSS (crafted for premium dark-themed glassmorphism, smooth animations, and high visual appeal).
-- **AI Integration**: Multimodal analysis using the Gemini API (Python/JS SDKs) to extract transcript, OCR text, visual descriptions, pacing metrics, hook analysis, and content copy.
+- **Backend Architecture**: Python (FastAPI) + Supabase PostgreSQL (Production pooler `aws-1-ap-northeast-2.pooler.supabase.com:5432`) + FFmpeg/ffprobe for media probes.
+- **Frontend Architecture**: React (Vite) + TypeScript + Vanilla CSS (crafted for premium dark-themed glassmorphism).
+- **AI Integration**: Multimodal analysis using the Gemini API (Python/JS SDKs).
 
 ## 3. Core Features Checklist
 
@@ -41,17 +41,20 @@ Build the **AI Content Optimizer**, a creative intelligence workspace where crea
 - [x] Create version comparison layout
 
 ### Phase 5: Hardening & Testing
-- [x] Implement SQLite schema and migrations
+- [x] Implement database schema and migrations
 - [x] Add error fallback states and empty states
 - [x] Deploy to production: **Vercel** (Frontend) + **Render** (Docker backend) + **Supabase** (Postgres DB)
 
-### Phase 6: UI Modals & Settings Completeness (In-Progress)
-- [ ] **Custom Confirmation Modal**: Replace browser's native `window.confirm` delete warning in `Dashboard.tsx` with a premium glassmorphic overlay modal.
-- [ ] **Settings Modal**: Connect the "Settings" sidebar button in `App.tsx` to a modal configuring default values (niche, language, target platform) and workspace presets.
-- [ ] **Help & Support Modal**: Connect the "?" button in `App.tsx` to an onboarding modal explaining optimization metrics (Hook, Pacing, Clarity) and platform safe-zones.
-- [ ] **Profile Modal**: Connect the user avatar button in `App.tsx` to a creator profile summary containing workspace metrics (number of analyses, database connection status, email).
+### Phase 6: UI Modals & Settings Completeness
+- [x] **Custom Confirmation Modal**: Replaced native `window.confirm` delete warning in `Dashboard.tsx` with a premium glassmorphic overlay modal.
+- [x] **Settings Modal**: Connected "Settings" sidebar button in `App.tsx` to a modal configuring default upload values (platform, objective, language) saved in `localStorage`.
+- [x] **Help & Support Modal**: Connected "?" button in `App.tsx` to an onboarding guide modal explaining metrics and safe-zone overlays.
+- [x] **Profile Modal**: Connected user avatar button in `App.tsx` to a creator profile card.
+
+### Phase 7: Bug Fix & Endpoint Stability (In-Progress)
+- [ ] **Fix Relative Import in main.py**: Fix `ImportError: attempted relative import with no known parent package` caused by `from .database import SessionLocal` on line 160 in `main.py`.
+- [ ] **Deploy & Verify**: Commit fix, trigger deployment on Render, and verify `POST /api/v1/analyses` succeeds without 500 or CORS error.
 
 ## 4. Current Status
-- **Backend Service**: Deploying build with `psycopg2-binary` on Render.
-- **Frontend App**: Active at `https://ai-content-optimizer-six.vercel.app` (Vercel).
-- **Next Step**: Build out Phase 6 features to complete product completeness and UX modals.
+- **Root Cause Identified**: `POST /api/v1/analyses` returned HTTP 500 due to invalid relative import `from .database import SessionLocal` in `main.py`. The resulting 500 error bypassed FastAPI CORS headers, causing the browser to block the response.
+- **Next Step**: Remove the relative import dot (`from database import SessionLocal`), push to main, and trigger Render deployment.
