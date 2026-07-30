@@ -1,0 +1,14 @@
+[project]
+name = "api"
+version = "0.1.0"
+description = "AI Content Optimizer Backend"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn>=0.30.0",
+    "sqlalchemy>=2.0.0",
+    "python-multipart>=0.0.9",
+    "google-genai>=0.1.1",
+    "pydantic>=2.0",
+]

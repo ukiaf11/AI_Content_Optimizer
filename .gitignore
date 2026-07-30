@@ -1,0 +1,20 @@
+# Node / Frontend
+apps/web/node_modules/
+apps/web/dist/
+apps/web/.tmp/
+*.tsbuildinfo
+
+# Python / Backend
+apps/api/.venv/
+**/__pycache__/
+*.pyc
+.pytest_cache/
+
+# Local Assets & database
+**/uploads/
+uploads/
+*.db
+
+# OS
+.DS_Store
+Thumbs.db
