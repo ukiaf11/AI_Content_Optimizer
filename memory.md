@@ -12,48 +12,34 @@ Build the **AI Content Optimizer**, a creative intelligence workspace where crea
 
 ## 3. Core Features Checklist
 
-### Phase 1: Project Setup & Structure
-- [x] Initialize monorepo directory structure
-- [x] Initialize Python backend with `uv` and FastAPI
-- [x] Initialize React Vite app with TypeScript
+### Phase 1–5: Foundation (All Complete ✅)
+- [x] Monorepo, Backend, Frontend setup
+- [x] Media processing pipeline (FFmpeg, ffprobe, keyframe extraction)
+- [x] AI analysis pipeline (Gemini API + mock fallback)
+- [x] Dashboard, NewAnalysis, ProcessingView, ReportView, RevisionCompare
+- [x] Database schema, production deployment (Vercel + Render + Supabase)
 
-### Phase 2: Media Processing & Storage
-- [x] Implement backend upload endpoints with file type validation
-- [x] Write media probing service using `ffprobe`
-- [x] Write media preprocessor using `ffmpeg`
-- [x] Store uploaded media assets and database files locally
-- [x] **New Visual Feature**: Extract mid-scene keyframes using `ffmpeg` as JPEGs
+### Phase 6: UI Modals & Settings (Complete ✅)
+- [x] Custom Confirmation Modal (Dashboard.tsx — `deleteTargetId` state, glassmorphic overlay)
+- [x] Settings Modal (App.tsx — default platform/objective/language, saved to localStorage)
+- [x] Help & Support Modal (App.tsx — FAQ guide with metric explanations)
+- [x] Profile Modal (App.tsx — creator profile card with workspace info)
 
-### Phase 3: AI Analysis Pipeline
-- [x] Integrate Gemini API client (with structured JSON schemas)
-- [x] Build multi-stage processing steps (Transcription, OCR, Scenes, Scores, Generated Copy)
-- [x] Implement robust mock analysis flow fallback
+### Phase 7: Bug Fixes (Complete ✅)
+- [x] Fixed `from .database import SessionLocal` relative import error
+- [x] Fixed Supabase IPv6 → IPv4 pooler connection
+- [x] Added `psycopg2-binary` dependency
+- [x] Live API verified: `POST /api/v1/analyses` → 200 OK
 
-### Phase 4: Frontend Development
-- [x] Build sleek dashboard showing past analyses and metrics
-- [x] Create double-column "New Analysis" launcher
-  - [x] **New UI Feature**: Dynamic platform-themed drag-and-drop backdrop colors
-- [x] Implement live-updating progress checker
-- [x] Build interactive **Analysis Report View**
-  - [x] Synchronized media player syncing timeline clicks
-  - [x] **New Graph Accent**: Pure-SVG interactive **Radar Chart** fingerprint
-  - [x] Visual timeline presenting extracted scene keyframes
-- [x] Create version comparison layout
-
-### Phase 5: Hardening & Testing
-- [x] Implement database schema and migrations
-- [x] Add error fallback states and empty states
-- [x] Deploy to production: **Vercel** (Frontend) + **Render** (Docker backend) + **Supabase** (Postgres DB)
-
-### Phase 6: UI Modals & Settings Completeness
-- [x] **Custom Confirmation Modal**: Replaced native `window.confirm` delete warning in `Dashboard.tsx` with a premium glassmorphic overlay modal.
-- [x] **Settings Modal**: Connected "Settings" sidebar button in `App.tsx` to a modal configuring default upload values (platform, objective, language) saved in `localStorage`.
-- [x] **Help & Support Modal**: Connected "?" button in `App.tsx` to an onboarding guide modal explaining metrics and safe-zone overlays.
-- [x] **Profile Modal**: Connected user avatar button in `App.tsx` to a creator profile card.
-
-### Phase 7: Bug Fix & Endpoint Stability
-- [x] **Fix Relative Import in main.py**: Fixed `ImportError: attempted relative import with no known parent package` caused by `from .database import SessionLocal` on line 160 in `main.py`.
-- [x] **Deploy & Verify**: Triggered manual deployment on Render (`dep-d9locrqjnfac73avas3g`) and verified `POST /api/v1/analyses` succeeds with HTTP 200 OK.
+### Phase 8: UI/UX Polish & Dark/Light Theme (In-Progress)
+- [ ] **Dark/Light Theme Toggle**: Add a theme toggle button to sidebar. Implement CSS `[data-theme="light"]` variable overrides in `index.css`. Store preference in `localStorage`. Toggle applies globally.
+- [ ] **UI/UX Polish — Settings Modal**: Add visual icons to each setting row, improve spacing, add "Reset to Defaults" button.
+- [ ] **UI/UX Polish — Help Modal**: Add accordion-style expandable FAQ sections, add contact/support link.
+- [ ] **UI/UX Polish — Profile Modal**: Add dynamic analysis count fetched from API, add logout button placeholder, improve avatar styling.
+- [ ] **UI/UX Polish — Delete Confirmation Modal**: Add danger icon, animate entrance with scale transform.
+- [ ] **General Polish**: Add hover micro-animations to sidebar icons, improve glass panel hover glows, add smooth page transition animations.
 
 ## 4. Current Status
-- **ALL PHASES COMPLETED (100%)**: Backend is online, Supabase PostgreSQL pooler is connected, `POST /api/v1/analyses` endpoint verified live with HTTP 200 OK.
+- **Backend**: Live on Render (`dep-d9locrqjnfac73avas3g`), verified 200 OK.
+- **Frontend**: Live on Vercel (`ai-content-optimizer-six.vercel.app`).
+- **Next Step**: Implement Phase 8 — Dark/Light theme toggle + UI/UX polish across all modals.
