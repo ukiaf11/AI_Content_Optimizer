@@ -38,6 +38,7 @@ export default function Dashboard({ onStartNew, onSelectReport, apiUrl }: Dashbo
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [platformFilter, setPlatformFilter] = useState('all');
+  const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
 
   const fetchAnalyses = async () => {
     try {
@@ -58,22 +59,25 @@ export default function Dashboard({ onStartNew, onSelectReport, apiUrl }: Dashbo
     fetchAnalyses();
   }, [apiUrl]);
 
-  const handleDelete = async (id: string, e: React.MouseEvent) => {
+  const handleDeleteClick = (id: string, e: React.MouseEvent) => {
     e.stopPropagation(); // Avoid triggering row selection
-    if (!window.confirm("Are you sure you want to delete this analysis and its associated media files?")) {
-      return;
-    }
+    setDeleteTargetId(id);
+  };
 
+  const confirmDelete = async () => {
+    if (!deleteTargetId) return;
     try {
-      const res = await fetch(`${apiUrl}/api/v1/analyses/${id}`, { method: 'DELETE' });
+      const res = await fetch(`${apiUrl}/api/v1/analyses/${deleteTargetId}`, { method: 'DELETE' });
       if (res.ok) {
-        setAnalyses(prev => prev.filter(item => item.id !== id));
+        setAnalyses(prev => prev.filter(item => item.id !== deleteTargetId));
       } else {
         alert("Failed to delete analysis.");
       }
     } catch (err) {
       console.error(err);
       alert("Error deleting analysis.");
+    } finally {
+      setDeleteTargetId(null);
     }
   };
 
@@ -272,7 +276,7 @@ export default function Dashboard({ onStartNew, onSelectReport, apiUrl }: Dashbo
                     <td style={{ padding: '16px', textAlign: 'right' }}>
                       <button 
                         style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: '6px', borderRadius: '4px' }}
-                        onClick={(e) => handleDelete(item.id, e)}
+                        onClick={(e) => handleDeleteClick(item.id, e)}
                         className="btn-delete"
                       >
                         <Trash2 size={16} />
@@ -285,6 +289,54 @@ export default function Dashboard({ onStartNew, onSelectReport, apiUrl }: Dashbo
           </div>
         )}
       </div>
+
+      {/* Custom Confirmation Modal */}
+      {deleteTargetId && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          background: 'rgba(0,0,0,0.6)',
+          backdropFilter: 'blur(8px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 9999
+        }}>
+          <div className="glass-panel animate-fade-in" style={{
+            width: '100%',
+            maxWidth: '400px',
+            padding: '24px',
+            borderRadius: '16px',
+            textAlign: 'center',
+            border: '1px solid var(--border-glow)',
+            boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.37)'
+          }}>
+            <h4 style={{ fontSize: '1.25rem', fontFamily: 'var(--font-display)', marginBottom: '12px', color: '#fff' }}>Confirm Deletion</h4>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '24px', lineHeight: '1.5' }}>
+              Are you sure you want to delete this analysis and all associated media files? This action is permanent and cannot be undone.
+            </p>
+            <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+              <button 
+                onClick={() => setDeleteTargetId(null)}
+                className="btn btn-secondary"
+                style={{ padding: '10px 20px', fontSize: '0.88rem' }}
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={confirmDelete}
+                className="btn"
+                style={{ background: 'var(--danger)', color: '#fff', border: 'none', padding: '10px 20px', fontSize: '0.88rem', borderRadius: '8px', cursor: 'pointer', fontWeight: 600 }}
+              >
+                Confirm Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

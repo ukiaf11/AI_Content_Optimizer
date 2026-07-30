@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Film, History, LayoutDashboard, PlusCircle, Settings, HelpCircle, User } from 'lucide-react';
+import { Film, History, LayoutDashboard, PlusCircle, Settings, HelpCircle, User, X } from 'lucide-react';
 import Dashboard from './components/Dashboard';
 import NewAnalysis from './components/NewAnalysis';
 import ProcessingView from './components/ProcessingView';
@@ -13,6 +13,39 @@ export default function App() {
   const [selectedAnalysisId, setSelectedAnalysisId] = useState<string | null>(null);
   const [compareRevisionId, setCompareRevisionId] = useState<string | null>(null);
   const [revisionParentId, setRevisionParentId] = useState<string | null>(null);
+
+  // UI Modal states
+  const [showSettings, setShowSettings] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
+
+  // Preference states
+  const [defaultPlatform, setDefaultPlatform] = useState(() => localStorage.getItem('def_platform') || 'instagram');
+  const [defaultObjective, setDefaultObjective] = useState(() => localStorage.getItem('def_objective') || 'views');
+  const [defaultLanguage, setDefaultLanguage] = useState(() => localStorage.getItem('def_lang') || 'en');
+
+  // Edit preference states (for Settings Modal)
+  const [editPlatform, setEditPlatform] = useState(defaultPlatform);
+  const [editObjective, setEditObjective] = useState(defaultObjective);
+  const [editLanguage, setEditLanguage] = useState(defaultLanguage);
+
+  useEffect(() => {
+    if (showSettings) {
+      setEditPlatform(defaultPlatform);
+      setEditObjective(defaultObjective);
+      setEditLanguage(defaultLanguage);
+    }
+  }, [showSettings, defaultPlatform, defaultObjective, defaultLanguage]);
+
+  const saveSettings = (plat: string, obj: string, lang: string) => {
+    localStorage.setItem('def_platform', plat);
+    localStorage.setItem('def_objective', obj);
+    localStorage.setItem('def_lang', lang);
+    setDefaultPlatform(plat);
+    setDefaultObjective(obj);
+    setDefaultLanguage(lang);
+    setShowSettings(false);
+  };
 
   // Check URL params on load
   useEffect(() => {
@@ -154,10 +187,40 @@ export default function App() {
 
         {/* Footer actions inside Sidebar */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', alignItems: 'center', color: 'var(--text-muted)' }}>
-          <div title="Settings" style={{ display: 'flex', cursor: 'pointer' }}><Settings size={20} /></div>
-          <div title="Help" style={{ display: 'flex', cursor: 'pointer' }}><HelpCircle size={20} /></div>
-          <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--border-glow)' }}>
-            <User size={16} />
+          <div 
+            title="Settings" 
+            style={{ display: 'flex', cursor: 'pointer', color: showSettings ? 'var(--accent-primary)' : 'inherit', transition: 'color 0.2s' }}
+            onClick={() => setShowSettings(true)}
+            className="nav-item-hover"
+          >
+            <Settings size={20} />
+          </div>
+          <div 
+            title="Help" 
+            style={{ display: 'flex', cursor: 'pointer', color: showHelp ? 'var(--accent-primary)' : 'inherit', transition: 'color 0.2s' }}
+            onClick={() => setShowHelp(true)}
+            className="nav-item-hover"
+          >
+            <HelpCircle size={20} />
+          </div>
+          <div 
+            title="Profile"
+            style={{ 
+              width: '32px', 
+              height: '32px', 
+              borderRadius: '50%', 
+              background: showProfile ? 'var(--accent-primary-glow)' : 'rgba(255,255,255,0.05)', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center', 
+              border: showProfile ? '1px solid var(--accent-primary)' : '1px solid var(--border-glow)',
+              cursor: 'pointer',
+              transition: 'all 0.2s'
+            }}
+            onClick={() => setShowProfile(true)}
+            className="nav-item-hover"
+          >
+            <User size={16} style={{ color: showProfile ? 'var(--accent-primary)' : 'inherit' }} />
           </div>
         </div>
       </aside>
@@ -180,6 +243,11 @@ export default function App() {
             onAnalysisStarted={handleAnalysisStarted} 
             apiUrl={API_URL} 
             revisionParentId={revisionParentId || undefined}
+            defaultSettings={{
+              platform: defaultPlatform,
+              objective: defaultObjective,
+              language: defaultLanguage
+            }}
           />
         )}
         
@@ -211,6 +279,259 @@ export default function App() {
         )}
 
       </main>
+
+      {/* Settings Modal */}
+      {showSettings && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          background: 'rgba(0,0,0,0.6)',
+          backdropFilter: 'blur(8px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 9999
+        }}>
+          <div className="glass-panel animate-fade-in" style={{
+            width: '100%',
+            maxWidth: '500px',
+            padding: '24px',
+            borderRadius: '16px',
+            border: '1px solid var(--border-glow)',
+            boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.37)'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <h3 style={{ fontSize: '1.25rem', fontFamily: 'var(--font-display)', color: '#fff' }}>Preferences & Defaults</h3>
+              <button 
+                onClick={() => setShowSettings(false)}
+                style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '24px' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '8px' }}>Default Target Platform</label>
+                <select 
+                  className="glass-input" 
+                  value={editPlatform} 
+                  onChange={e => setEditPlatform(e.target.value)}
+                  style={{ width: '100%', padding: '10px', fontSize: '0.9rem' }}
+                >
+                  <option value="instagram">Instagram</option>
+                  <option value="tiktok">TikTok</option>
+                  <option value="youtube">YouTube</option>
+                </select>
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '8px' }}>Default Objective</label>
+                <select 
+                  className="glass-input" 
+                  value={editObjective} 
+                  onChange={e => setEditObjective(e.target.value)}
+                  style={{ width: '100%', padding: '10px', fontSize: '0.9rem' }}
+                >
+                  <option value="views">Maximize Views / Reach</option>
+                  <option value="follows">Drive Account Follows</option>
+                  <option value="saves">Increase Saves / Bookmarks</option>
+                  <option value="shares">Boost Sharing / Virality</option>
+                  <option value="comments">Generate Comments & Chat</option>
+                  <option value="leads">Generate Clicks & Leads</option>
+                  <option value="sales">Drive Direct Product Sales</option>
+                </select>
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '8px' }}>Default Language</label>
+                <select 
+                  className="glass-input" 
+                  value={editLanguage} 
+                  onChange={e => setEditLanguage(e.target.value)}
+                  style={{ width: '100%', padding: '10px', fontSize: '0.9rem' }}
+                >
+                  <option value="en">English (US/UK)</option>
+                  <option value="es">Spanish</option>
+                  <option value="fr">French</option>
+                  <option value="de">German</option>
+                  <option value="hi">Hindi</option>
+                </select>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
+              <button 
+                onClick={() => setShowSettings(false)}
+                className="btn btn-secondary"
+                style={{ padding: '8px 16px', fontSize: '0.88rem' }}
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={() => saveSettings(editPlatform, editObjective, editLanguage)}
+                className="btn btn-primary"
+                style={{ padding: '8px 16px', fontSize: '0.88rem' }}
+              >
+                Save Preferences
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Help Modal */}
+      {showHelp && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          background: 'rgba(0,0,0,0.6)',
+          backdropFilter: 'blur(8px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 9999
+        }}>
+          <div className="glass-panel animate-fade-in" style={{
+            width: '100%',
+            maxWidth: '600px',
+            padding: '24px',
+            borderRadius: '16px',
+            border: '1px solid var(--border-glow)',
+            boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
+            maxHeight: '85vh',
+            overflowY: 'auto'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', borderBottom: '1px solid var(--border-glow)', paddingBottom: '12px' }}>
+              <h3 style={{ fontSize: '1.25rem', fontFamily: 'var(--font-display)', color: '#fff', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <HelpCircle size={20} style={{ color: 'var(--accent-primary)' }} />
+                Workspace Help & FAQ Guide
+              </h3>
+              <button 
+                onClick={() => setShowHelp(false)}
+                style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', textAlign: 'left' }}>
+              <div>
+                <h4 style={{ color: '#fff', fontWeight: 600, fontSize: '0.95rem', marginBottom: '6px' }}>1. How does the Creative Scorecard work?</h4>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', lineHeight: '1.5' }}>
+                  Our visual intelligence engine rates your content from 1 to 100 on eight metrics. The <strong>Hook Retention</strong> score checks the first 3 seconds for immediate engagement hooks. <strong>Topic Clarity</strong> assesses how easily viewers understand your subject, and <strong>Pacing</strong> checks shot dynamics.
+                </p>
+              </div>
+
+              <div>
+                <h4 style={{ color: '#fff', fontWeight: 600, fontSize: '0.95rem', marginBottom: '6px' }}>2. Using the Safe-Zone Overlay</h4>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', lineHeight: '1.5' }}>
+                  When viewing a video report, toggle the <strong>Safe-Zone Overlay</strong>. This presents a visual UI grid layer mimicking Instagram, TikTok, and YouTube UI buttons. Always place text and focal points inside the center zones to avoid being blocked by social buttons.
+                </p>
+              </div>
+
+              <div>
+                <h4 style={{ color: '#fff', fontWeight: 600, fontSize: '0.95rem', marginBottom: '6px' }}>3. How do I optimize using Revisions?</h4>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', lineHeight: '1.5' }}>
+                  Once you apply our generated copy modifications or visual adjustments, export your revised video and upload it using <strong>Upload Revised Version</strong> inside the report view. This triggers a side-by-side comparison to verify score improvements.
+                </p>
+              </div>
+
+              <div style={{ padding: '12px', background: 'rgba(99, 102, 241, 0.05)', border: '1px dashed var(--accent-primary-glow)', borderRadius: '8px', fontSize: '0.82rem', color: 'var(--text-secondary)', display: 'flex', gap: '8px' }}>
+                💡 <strong>Tip:</strong> Always include target keywords inside the first 5 words of your captions to optimize platform search indices!
+              </div>
+            </div>
+
+            <button 
+              onClick={() => setShowHelp(false)}
+              className="btn btn-primary"
+              style={{ width: '100%', marginTop: '24px', padding: '12px' }}
+            >
+              Got It
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Profile Modal */}
+      {showProfile && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          background: 'rgba(0,0,0,0.6)',
+          backdropFilter: 'blur(8px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 9999
+        }}>
+          <div className="glass-panel animate-fade-in" style={{
+            width: '100%',
+            maxWidth: '420px',
+            padding: '28px 24px',
+            borderRadius: '16px',
+            border: '1px solid var(--border-glow)',
+            boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
+            textAlign: 'center'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '-12px', marginRight: '-12px' }}>
+              <button 
+                onClick={() => setShowProfile(false)}
+                style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* Avatar block */}
+            <div className="flex-center" style={{ width: '72px', height: '72px', borderRadius: '50%', background: 'var(--accent-primary-glow)', border: '2px solid var(--accent-primary)', margin: '0 auto 16px auto', color: 'var(--accent-primary)' }}>
+              <User size={36} />
+            </div>
+
+            <h3 style={{ fontSize: '1.25rem', fontFamily: 'var(--font-display)', color: '#fff', marginBottom: '4px' }}>Upendra Kushwaha</h3>
+            <p style={{ color: 'var(--accent-secondary)', fontSize: '0.82rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '20px' }}>Creator Tier</p>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', textAlign: 'left', background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border-glow)', borderRadius: '12px', padding: '16px', marginBottom: '24px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
+                <span style={{ color: 'var(--text-muted)' }}>Workspace Path:</span>
+                <span style={{ color: '#fff', fontWeight: 500 }}>insta_suggestions</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
+                <span style={{ color: 'var(--text-muted)' }}>Connected DB:</span>
+                <span style={{ color: 'var(--success)', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--success)' }}></div>
+                  Supabase (aws-1)
+                </span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
+                <span style={{ color: 'var(--text-muted)' }}>Active Branch:</span>
+                <span style={{ color: '#fff', fontWeight: 500 }}>main</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
+                <span style={{ color: 'var(--text-muted)' }}>API Status:</span>
+                <span style={{ color: 'var(--success)', fontWeight: 500 }}>Online</span>
+              </div>
+            </div>
+
+            <button 
+              onClick={() => setShowProfile(false)}
+              className="btn btn-secondary"
+              style={{ width: '100%', padding: '10px' }}
+            >
+              Close Profile
+            </button>
+          </div>
+        </div>
+      )}
 
     </div>
   );

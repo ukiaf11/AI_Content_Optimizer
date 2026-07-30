@@ -6,20 +6,25 @@ interface NewAnalysisProps {
   onAnalysisStarted: (id: string) => void;
   apiUrl: string;
   revisionParentId?: string; // Optional: if this is a revision upload
+  defaultSettings?: {
+    platform: string;
+    objective: string;
+    language: string;
+  };
 }
 
-export default function NewAnalysis({ onBack, onAnalysisStarted, apiUrl, revisionParentId }: NewAnalysisProps) {
+export default function NewAnalysis({ onBack, onAnalysisStarted, apiUrl, revisionParentId, defaultSettings }: NewAnalysisProps) {
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [fileType, setFileType] = useState<'video' | 'image' | null>(null);
 
   // Metadata states
-  const [platform, setPlatform] = useState('instagram');
-  const [objective, setObjective] = useState('views');
+  const [platform, setPlatform] = useState(defaultSettings?.platform || 'instagram');
+  const [objective, setObjective] = useState(defaultSettings?.objective || 'views');
   const [niche, setNiche] = useState('');
   const [audience, setAudience] = useState('');
   const [caption, setCaption] = useState('');
-  const [language, setLanguage] = useState('en');
+  const [language, setLanguage] = useState(defaultSettings?.language || 'en');
 
   // Status states
   const [uploading, setUploading] = useState(false);
