@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Film, History, LayoutDashboard, PlusCircle, Settings, HelpCircle, User, X } from 'lucide-react';
+import { Film, History, LayoutDashboard, PlusCircle, Settings, HelpCircle, User, X, Sparkles } from 'lucide-react';
 import Dashboard from './components/Dashboard';
 import NewAnalysis from './components/NewAnalysis';
 import ProcessingView from './components/ProcessingView';
 import ReportView from './components/ReportView';
 import RevisionCompare from './components/RevisionCompare';
+import ServicesView from './components/ServicesView';
 
 const API_URL = import.meta.env.VITE_API_URL || `${window.location.protocol}//${window.location.hostname}:8000`;
 
 export default function App() {
-  const [currentView, setCurrentView] = useState<'dashboard' | 'new_analysis' | 'processing' | 'report' | 'compare'>('dashboard');
+  const [currentView, setCurrentView] = useState<'dashboard' | 'new_analysis' | 'processing' | 'report' | 'compare' | 'services'>('dashboard');
   const [selectedAnalysisId, setSelectedAnalysisId] = useState<string | null>(null);
   const [compareRevisionId, setCompareRevisionId] = useState<string | null>(null);
   const [revisionParentId, setRevisionParentId] = useState<string | null>(null);
@@ -152,6 +153,7 @@ export default function App() {
             {[
               { icon: <LayoutDashboard size={20} />, label: 'Dashboard', view: 'dashboard' },
               { icon: <PlusCircle size={20} />, label: 'New', view: 'new_analysis' },
+              { icon: <Sparkles size={20} />, label: 'Services', view: 'services' },
             ].map(item => {
               const isActive = currentView === item.view;
               return (
@@ -160,6 +162,7 @@ export default function App() {
                   onClick={() => {
                     if (item.view === 'dashboard') navigateToDashboard();
                     else if (item.view === 'new_analysis') startNewAnalysis();
+                    else if (item.view === 'services') setCurrentView('services');
                   }}
                   title={item.label}
                   style={{ 
@@ -276,6 +279,10 @@ export default function App() {
             onBack={navigateToDashboard} 
             apiUrl={API_URL} 
           />
+        )}
+
+        {currentView === 'services' && (
+          <ServicesView onStartAnalysis={() => startNewAnalysis()} />
         )}
 
       </main>
