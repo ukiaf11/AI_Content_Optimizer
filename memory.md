@@ -31,15 +31,19 @@ Build the **AI Content Optimizer**, a creative intelligence workspace where crea
 - [x] Added `psycopg2-binary` dependency
 - [x] Live API verified: `POST /api/v1/analyses` → 200 OK
 
-### Phase 8: UI/UX Polish & Dark/Light Theme (In-Progress)
-- [ ] **Dark/Light Theme Toggle**: Add a theme toggle button to sidebar. Implement CSS `[data-theme="light"]` variable overrides in `index.css`. Store preference in `localStorage`. Toggle applies globally.
-- [ ] **UI/UX Polish — Settings Modal**: Add visual icons to each setting row, improve spacing, add "Reset to Defaults" button.
-- [ ] **UI/UX Polish — Help Modal**: Add accordion-style expandable FAQ sections, add contact/support link.
-- [ ] **UI/UX Polish — Profile Modal**: Add dynamic analysis count fetched from API, add logout button placeholder, improve avatar styling.
-- [ ] **UI/UX Polish — Delete Confirmation Modal**: Add danger icon, animate entrance with scale transform.
-- [ ] **General Polish**: Add hover micro-animations to sidebar icons, improve glass panel hover glows, add smooth page transition animations.
+### Phase 8: UI/UX Polish & Dark/Light Theme (Complete ✅)
+- [x] **Dark/Light Theme Toggle**: Added `[data-theme="light"]` CSS variable overrides in `index.css`. Theme toggle button (Sun/Moon icon) in sidebar. Stored in `localStorage`. Applies globally.
+- [x] **Mobile Bottom-Nav**: Glassmorphic bottom navigation bar on `< 768px` replacing hidden sidebar. Dashboard, New, Services, and Theme toggle.
+- [x] **Page Transition Animations**: Smooth `opacity + translateY` fade-in on every page change using React `key` prop remounting.
+- [x] **Nav Icon Hover Micro-Animations**: `translateY(-2px)` lift + glow filter on all sidebar icons.
+- [x] **UI/UX Polish — Settings Modal**: Added visual icons (Globe, Target, Languages) to each setting row, improved spacing, added "Reset to Defaults" button.
+- [x] **UI/UX Polish — Help Modal**: Converted to accordion-style expandable FAQ sections with chevron rotation. Added contact/support link.
+- [x] **UI/UX Polish — Profile Modal**: Added dynamic analysis count fetched from API, logout button placeholder (disabled), improved avatar with conic gradient ring.
+- [x] **UI/UX Polish — Delete Confirmation Modal**: Added danger icon ring with AlertTriangle, scale entrance animation, red glow border.
+- [x] **Card Border Glow Pulse**: Animated border glow pulse on interactive card hover.
 
 ## 4. Current Status
 - **Backend**: Live on Render (`dep-d9locrqjnfac73avas3g`), verified 200 OK.
 - **Frontend**: Live on Vercel (`ai-content-optimizer-six.vercel.app`).
-- **Next Step**: Implement Phase 8 — Dark/Light theme toggle + UI/UX polish across all modals.
+- **All Phases Complete**: Phases 1–8 fully implemented. Project matches blueprint specification.
+

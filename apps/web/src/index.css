@@ -242,3 +242,394 @@ h1, h2, h3, h4, h5, h6 {
   align-items: center;
   justify-content: center;
 }
+
+/* =====================================================
+   LIGHT THEME OVERRIDES (Task 1)
+   ===================================================== */
+[data-theme="light"] {
+  --bg-primary: #F5F6FA;
+  --bg-secondary: #EDEEF5;
+  --bg-tertiary: #E2E3ED;
+  --text-primary: #1A1A2E;
+  --text-secondary: #5A5A7A;
+  --text-muted: #8888A0;
+  --border-glow: rgba(0, 0, 0, 0.08);
+  --border-glow-active: rgba(99, 102, 241, 0.25);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.12);
+  --accent-primary-glow: rgba(99, 102, 241, 0.1);
+  --accent-secondary-glow: rgba(0, 242, 254, 0.08);
+  --success-glow: rgba(16, 185, 129, 0.1);
+  --warning-glow: rgba(245, 158, 11, 0.1);
+  --danger-glow: rgba(239, 68, 68, 0.1);
+}
+
+[data-theme="light"] body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+[data-theme="light"] .glass-panel {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .glass-panel:hover {
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="light"] .glass-input {
+  background: rgba(255, 255, 255, 0.8);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: var(--text-primary);
+}
+
+[data-theme="light"] .glass-input:focus {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px var(--accent-primary-glow);
+}
+
+[data-theme="light"] ::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+[data-theme="light"] ::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+}
+
+[data-theme="light"] .glass-input option {
+  background: #fff;
+  color: var(--text-primary);
+}
+
+/* =====================================================
+   NAV ICON HOVER MICRO-ANIMATIONS (Task 5)
+   ===================================================== */
+.nav-item-hover {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-item-hover:hover {
+  transform: translateY(-2px);
+  filter: drop-shadow(0 0 8px var(--accent-primary-glow));
+  color: var(--accent-primary) !important;
+}
+
+/* =====================================================
+   PAGE TRANSITION ANIMATION (Task 4)
+   ===================================================== */
+@keyframes pageTransitionIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-transition {
+  animation: pageTransitionIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* =====================================================
+   CARD BORDER GLOW PULSE ON HOVER (Task 10)
+   ===================================================== */
+@keyframes borderGlowPulse {
+  0%, 100% { box-shadow: var(--shadow-md), 0 0 0 1px var(--accent-primary-glow); }
+  50% { box-shadow: var(--shadow-md), 0 0 16px 3px var(--accent-primary-glow); }
+}
+
+.glass-panel-interactive:hover {
+  animation: borderGlowPulse 1.5s ease-in-out infinite;
+}
+
+/* =====================================================
+   DELETE MODAL SCALE ENTRANCE (Task 9)
+   ===================================================== */
+@keyframes modalScaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.modal-scale-in {
+  animation: modalScaleIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.danger-icon-ring {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--danger-glow);
+  border: 2px solid var(--danger);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px auto;
+  color: var(--danger);
+}
+
+/* =====================================================
+   ACCORDION FAQ STYLES (Task 7)
+   ===================================================== */
+.accordion-item {
+  border: 1px solid var(--border-glow);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color 0.3s ease;
+}
+
+.accordion-item:hover {
+  border-color: var(--border-glow-active);
+}
+
+.accordion-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 16px;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: var(--font-display);
+  cursor: pointer;
+  text-align: left;
+  gap: 12px;
+  transition: background 0.2s ease;
+}
+
+[data-theme="light"] .accordion-header {
+  color: var(--text-primary);
+}
+
+.accordion-header:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+[data-theme="light"] .accordion-header:hover {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.accordion-chevron {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
+  color: var(--text-muted);
+}
+
+.accordion-chevron.expanded {
+  transform: rotate(180deg);
+}
+
+.accordion-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), padding 0.35s ease;
+  padding: 0 16px;
+}
+
+.accordion-content.expanded {
+  max-height: 300px;
+  padding: 0 16px 16px 16px;
+}
+
+/* =====================================================
+   AVATAR GRADIENT RING (Task 8)
+   ===================================================== */
+.avatar-gradient-ring {
+  background: conic-gradient(from 0deg, var(--accent-primary), var(--accent-secondary), var(--accent-primary));
+  padding: 3px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-gradient-ring-inner {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: var(--bg-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-primary);
+}
+
+/* =====================================================
+   THEME TOGGLE BUTTON (Task 2)
+   ===================================================== */
+.theme-toggle-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: transparent;
+  border: 1px solid var(--border-glow);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.theme-toggle-btn:hover {
+  background: var(--accent-primary-glow);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  transform: translateY(-2px);
+}
+
+/* =====================================================
+   SETTINGS ROW ICONS (Task 6)
+   ===================================================== */
+.settings-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.settings-row-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.settings-row-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.btn-reset {
+  background: transparent;
+  border: 1px dashed var(--border-glow);
+  color: var(--text-muted);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+  text-align: center;
+}
+
+.btn-reset:hover {
+  border-color: var(--warning);
+  color: var(--warning);
+  background: var(--warning-glow);
+}
+
+/* =====================================================
+   MOBILE BOTTOM-NAV BAR (Task 3)
+   ===================================================== */
+.bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: rgba(18, 19, 28, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border-glow);
+  padding: 8px 0 max(8px, env(safe-area-inset-bottom));
+  justify-content: space-around;
+  align-items: center;
+}
+
+[data-theme="light"] .bottom-nav {
+  background: rgba(245, 246, 250, 0.92);
+}
+
+.bottom-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.bottom-nav-item.active {
+  color: var(--accent-primary);
+  background: var(--accent-primary-glow);
+}
+
+.bottom-nav-item:hover {
+  color: var(--accent-primary);
+}
+
+/* =====================================================
+   RESPONSIVE BREAKPOINTS (Task 3)
+   ===================================================== */
+@media (max-width: 768px) {
+  .desktop-sidebar {
+    display: none !important;
+  }
+
+  .bottom-nav {
+    display: flex;
+  }
+
+  .main-workspace {
+    padding: 0 16px !important;
+    padding-bottom: 72px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-workspace {
+    padding: 0 12px !important;
+  }
+}
+
+/* =====================================================
+   LOGOUT BUTTON PLACEHOLDER (Task 8)
+   ===================================================== */
+.btn-logout {
+  width: 100%;
+  padding: 10px;
+  background: transparent;
+  border: 1px solid var(--border-glow);
+  color: var(--text-muted);
+  border-radius: 8px;
+  font-family: var(--font-display);
+  font-size: 0.88rem;
+  cursor: not-allowed;
+  opacity: 0.5;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}

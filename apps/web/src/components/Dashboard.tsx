@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Play, Plus, Search, Trash2, Video, Image, FileText, CheckCircle, Clock, AlertCircle } from 'lucide-react';
+import { Play, Plus, Search, Trash2, Video, Image, FileText, CheckCircle, Clock, AlertCircle, AlertTriangle } from 'lucide-react';
 
 interface AnalysisItem {
   id: string;
@@ -290,7 +290,7 @@ export default function Dashboard({ onStartNew, onSelectReport, apiUrl }: Dashbo
         )}
       </div>
 
-      {/* Custom Confirmation Modal */}
+      {/* Custom Confirmation Modal (Task 9 — polished) */}
       {deleteTargetId && (
         <div style={{
           position: 'fixed',
@@ -305,16 +305,21 @@ export default function Dashboard({ onStartNew, onSelectReport, apiUrl }: Dashbo
           justifyContent: 'center',
           zIndex: 9999
         }}>
-          <div className="glass-panel animate-fade-in" style={{
+          <div className="glass-panel modal-scale-in" style={{
             width: '100%',
             maxWidth: '400px',
-            padding: '24px',
+            padding: '28px',
             borderRadius: '16px',
             textAlign: 'center',
-            border: '1px solid var(--border-glow)',
-            boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.37)'
+            border: '1px solid var(--danger)',
+            boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.37), 0 0 24px var(--danger-glow)'
           }}>
-            <h4 style={{ fontSize: '1.25rem', fontFamily: 'var(--font-display)', marginBottom: '12px', color: '#fff' }}>Confirm Deletion</h4>
+            {/* Danger Icon Ring */}
+            <div className="danger-icon-ring">
+              <AlertTriangle size={26} />
+            </div>
+
+            <h4 style={{ fontSize: '1.25rem', fontFamily: 'var(--font-display)', marginBottom: '12px', color: 'var(--text-primary)' }}>Confirm Deletion</h4>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '24px', lineHeight: '1.5' }}>
               Are you sure you want to delete this analysis and all associated media files? This action is permanent and cannot be undone.
             </p>
